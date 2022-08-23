@@ -23,4 +23,64 @@
 // * The program should be case-insensitive (the user should be able to type
 //   Reboot, reboot, REBOOT, etc.)
 
-fn main() {}
+
+use std::io;
+
+// * Use an enum to store the possible power states
+enum PowerStates {
+    Off,
+    Sleep,
+    Reboot,
+    Shutdown,
+    Hibernate
+}
+
+
+impl PowerStates {
+    fn power_state (state: &str) -> Option<PowerStates> {
+        let state = state.trim().to_lowercase();
+        // Turn String -> str using as.str()
+        match state.as_str() {
+            "off" => Some(PowerStates::Off),
+            "sleep" => Some(PowerStates::Sleep),
+            "reboot" => Some(PowerStates::Reboot),
+            "shutdown" => Some(PowerStates::Shutdown),
+            "hibernate" => Some(PowerStates::Hibernate),
+            _ => None
+        }
+    }
+}
+
+// * Use a function with a match expression to print out the power messages
+//   * The function should accept the enum as an input
+fn print_power_state (state: PowerStates) {
+    use PowerStates::*;
+    match state {
+        Off => println!("System turning off"),
+        Sleep => println!("System going to sleep"),
+        Reboot => println!("System rebooting"),
+        Shutdown => println!("System shuting down"),
+        Hibernate => println!("System hybernating")
+    }
+}
+    // Function to get user input
+        // fn get_input() -> io::Result<String> {
+        //     let mut buffer = String::new();
+        //     io::stdin().read_line(&mut buffer)?;
+        //     Ok(buffer.trim().to_owned().to_lowercase())
+        // }
+
+fn main() {
+
+    let mut buffer = String::new();
+    println!("Enter New Power State:");
+    let user_input = io::stdin().read_line(&mut buffer);
+    if user_input.is_ok() {
+        match PowerStates::power_state(&buffer) {
+            Some(state) => print_power_state(state),
+            None => println!("invalid power state.")
+        }
+    } else {
+        println!("error reading input");
+    }
+}
