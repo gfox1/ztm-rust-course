@@ -10,6 +10,41 @@
 // * The mock data has already been loaded with the include_str! macro, so all functionality
 //   must be implemented using references/borrows
 
+// The 'static indicates that the data lives as long as the program is running
+// name is feild 1 in data and title is feild 4
 const MOCK_DATA: &'static str = include_str!("mock-data.csv");
 
-fn main() {}
+
+struct Names<'a> {
+    inner: Vec<&'a str>,
+}
+
+struct Titles<'a> {
+    inner: Vec<&'a str>,
+}
+
+fn main() {
+    // create a function / variable to store the data from the file 
+    let data: Vec<_> = MOCK_DATA.split('\n').skip(1).collect();
+    let names: Vec<_> = data
+        .iter()
+        .filter_map(|line| line.split(',').nth(1))
+        .collect();
+
+    let names = Names {inner: names};
+
+        let titles: Vec<_> = data
+        .iter()
+        .filter_map(|line| line.split(',').nth(4))
+        .collect();
+    
+    let titles = Titles {inner: titles};
+
+    // zip funtion turns the two pieces of data into a tuple 
+    let data = names.inner.iter().zip(titles.inner.iter());
+
+    // take fn only takes the amount of elements from the data set that you specify 
+    for (name, title) in data.take(5) {
+        println!("Name: {}, Title: {}", name, title);
+    }
+}
