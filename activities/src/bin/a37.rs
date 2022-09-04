@@ -22,8 +22,51 @@
 // * Utilize the `thiserror` crate for your error type
 // * Run `cargo test --bin a37` to test your implementation
 
+use thiserror::Error;
+use std::convert::TryFrom;
+
+#[derive(Debug, Error)]
+enum RgbError {
+    // making this error macros since we importeded the this error crate
+    #[error("hex colors must begin with a hash (#)")]
+    MissingHash,
+    #[error("failed to parse hex difit: {0}")]
+    ParseError(std::num::ParseIntError),
+    #[error("invalid hex color length (must be 6)")]
+    LengthError
+}
+
 #[derive(Debug, Eq, PartialEq)]
 struct Rgb(u8, u8, u8);
+impl TryFrom<&str> for Rgb {
+    // When you implement the TryFrom trait you have to specifiy the type of error you have
+    // the TryForm trait returns a Result
+    type Error = RgbError;
+    fn try_from (hex: &str) -> Result<Self, Self::Error> {
+        if !hex.starts_with('#') {
+            return Err(RgbError::MissingHash);    
+        }
+        if hex.len() != 7 {
+            return Err(RgbError::LengthError);
+        }
+        
+        // #ff00aa
+        let (r, g, b) = (
+            u8::from_str_radix(&hex[1..=2], 16)?,
+            u8::from_str_radix(&hex[3..=4], 16)?,
+            u8::from_str_radix(&hex[5..=6], 16)?,
+        );
+
+        Ok(Self(r,g,b))
+
+    }
+} 
+
+impl From<std::num::ParseIntError> for RgbError {
+    fn from(err: std::num::ParseIntError) -> Self {
+        Self::ParseError(err)
+    }
+}
 
 fn main() {
     // Use `cargo test --bin a37` to test your implementation
