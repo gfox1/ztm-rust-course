@@ -8,6 +8,9 @@
 // Notes:
 // * Use the join function to wait for threads to finish
 
+use std::thread;
+
+
 fn msg_hello() -> &'static str {
     use std::time::Duration;
     std::thread::sleep(Duration::from_millis(1000));
@@ -26,4 +29,18 @@ fn msg_excited() -> &'static str {
     "!"
 }
 
-fn main() {}
+fn main() {
+
+    let hello = thread::spawn(move || {
+        msg_hello()
+    });
+
+    let threads = thread::spawn(move || {
+        msg_thread()
+    });
+    let excited = thread::spawn(move || {
+        msg_excited()
+    });
+
+    println!("{}{}{}", hello.join().expect("failed to join"), threads.join().expect("failed to join"), excited.join().expect("failed to join"));
+}
