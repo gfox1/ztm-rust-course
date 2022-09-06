@@ -21,8 +21,86 @@
 // * Test your program by changing the vehicle status from both a storefront
 //   and from corporate
 
-struct Corporate;
+use std::cell::RefCell;
+use std::rc::Rc;
 
-struct StoreFront;
+#[derive(Debug)]
+enum Vehicle {
+    Car,
+    Truck
+}
+
+#[derive(Debug, Hash, PartialEq, PartialOrd)]
+enum VehicleStatus {
+    Available,
+    Unavailable,
+    Maintenance,
+    Rented
+}
+
+#[derive(Debug)]
+struct Rental {
+    vehicle: Vehicle,
+    vin: String,
+    status: VehicleStatus
+
+}
+
+struct Corporate (Rc<RefCell<Vec<Rental>>>);
+
+struct StoreFront (Rc<RefCell<Vec<Rental>>>);
 
 fn main() {}
+
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn update_status() {
+        let vehicles = vec![
+            Rental {
+                vehicle: Vehicle::Car,
+                vin: "345".to_owned(),
+                status: VehicleStatus::Available,
+
+            },
+            Rental {
+                vehicle: Vehicle::Truck,
+                vin: "1239".to_owned(),
+                status: VehicleStatus::Maintenance,
+
+            },
+            Rental {
+                vehicle: Vehicle::Car,
+                vin: "r7jty".to_owned(),
+                status: VehicleStatus::Rented,
+            }
+        ];
+        let vechicles = Rc::new(RefCell::new(vehicles));
+
+        let corporate = Corporate(Rc::clone(&vechicles));
+        let storefront = StoreFront(Rc::clone(&vechicles));
+        
+        {
+            let mut rentals = storefront.0.borrow_mut();
+                if let Some (car) = rentals.get_mut(0) {
+                    assert_eq!(car.status, VehicleStatus::Available);
+                    car.status = VehicleStatus::Rented;
+                }
+        }
+        {
+            let mut rentals = corporate.0.borrow_mut();
+                if let Some (car) = rentals.get_mut(0) {
+                    assert_eq!(car.status, VehicleStatus::Rented);
+                    car.status = VehicleStatus::Available;
+                }
+        }
+
+        let rentals = storefront.0.borrow();
+        if let Some(car) = rentals.get(0) {
+            assert_eq!(car.status, VehicleStatus::Available);
+        }
+    }
+}
