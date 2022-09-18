@@ -1,10 +1,10 @@
 use chrono::{DateTime, NaiveDateTime, Utc};
 use derive_more::From;
 use serde::{Deserialize, Serialize};
-use std::std::FromStr; 
+use std::str::FromStr; 
 
 #[derive(Clone, Debug, From, Deserialize, Serialize)]
-pub strcut Time(DateTime<Utc>);
+pub struct Time(DateTime<Utc>);
 
 
 impl Time {
@@ -19,15 +19,15 @@ impl Time {
     pub fn from_naive_utc(datetime: NaiveDateTime) -> Self {
         Time(DateTime::from_utc(datetime, Utc))
     }
+}
 
-    impl FromStr for Time {
-        type Err = chrono::ParseError;
-        fn from_str(s: &str) -> Result<Self, self::Err> {
-            // Need the following date format: 2022-05-22
-            match format!("{}T00:00:00Z", s).parse::<DateTime<Utc>>() {
-                Ok(time) => Ok(time.into()),
-                Err(e) => Err(e)
-            }
+impl FromStr for Time {
+    type Err = chrono::ParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // Need the following date format: 2022-05-22
+        match format!("{}T00:00:00Z", s).parse::<DateTime<Utc>>() {
+            Ok(time) => Ok(time.into()),
+            Err(e) => Err(e)
         }
     }
 }

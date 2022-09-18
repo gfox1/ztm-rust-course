@@ -1,4 +1,4 @@
-use super::ClipError;
+use crate::domain::clip::ClipError;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
@@ -11,7 +11,7 @@ impl Password {
         match password {
             Some (password) => {
                 if !password.trim().is_empty() {
-                    Ok(Slef(Some(password)))
+                    Ok(Self(Some(password)))
                 } else {
                     Ok (Self(None))
                 }

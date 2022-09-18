@@ -1,4 +1,4 @@
-use super::ClipError;
+use crate::domain::clip::ClipError;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -13,11 +13,11 @@ impl Content {
         }
     }
 
-    pub into_inner(self) -> Self {
-        self.0
+    pub fn into_inner(self) -> String {
+        self.0 
     }
 
-    pub as_str(&self) -> &str {
+    pub fn as_str(&self) -> &str {
         self.0.as_str()
     }
 

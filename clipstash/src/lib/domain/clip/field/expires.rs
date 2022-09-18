@@ -1,5 +1,5 @@
-use crate::domain::Time; 
-use super::ClipError;
+use crate::domain::time::Time; 
+use crate::domain::clip::ClipError;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
@@ -16,8 +16,8 @@ impl Expires {
     }
 }
 
-impl Default for Expries {
-    fn default() -> Slef {
+impl Default for Expires {
+    fn default() -> Self {
         Self::new(None)
     }
 }
@@ -29,7 +29,7 @@ impl FromStr for Expires {
             Ok(Self(None))
         } else {
             match Time::from_str(raw) {
-                Ok(time) => Ok(Self::new(time))
+                Ok(time) => Ok(Self::new(time)),
                 Err(e) => Err(e.into())
             }
         }

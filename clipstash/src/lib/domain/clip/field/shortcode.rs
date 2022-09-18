@@ -1,4 +1,4 @@
-use super::ClipError;
+use crate::domain::clip::ClipError;
 use derive_more::From;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
@@ -48,7 +48,7 @@ impl From<ShortCode> for String {
     }
 }
 
-impl From<&str> for Shortcode {
+impl From<&str> for ShortCode {
     fn from(shortcode: &str) -> Self {
         ShortCode(shortcode.to_owned())
     }

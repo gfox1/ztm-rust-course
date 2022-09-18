@@ -1,4 +1,4 @@
-use super::ClipError;
+use crate::domain::clip::ClipError;
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
@@ -13,7 +13,7 @@ impl Title {
         match title {
             Some (title) => {
                 if !title.trim().is_empty() {
-                    Slef(Some(title))
+                    Self(Some(title))
                 } else {
                     Self(None)
                 }
@@ -29,13 +29,13 @@ impl Title {
 
 impl Default for Title {
     fn default() -> Self {
-        self::new(None)
+        Self::new(None)
     }
 }
 
 impl FromStr for Title {
     type Err = ClipError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(self::new(s.to_owned()))
+        Ok(Self::new(s.to_owned()))
     }
 }
