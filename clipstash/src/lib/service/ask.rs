@@ -24,7 +24,7 @@ impl From<ShortCode> for GetClip {
     fn from (shortcode: ShortCode) -> Self {
         Self { 
             shortcode, 
-            password: feild::Password::default() 
+            password: field::Password::default() 
         }
     }
 }
