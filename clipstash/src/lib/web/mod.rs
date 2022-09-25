@@ -3,6 +3,7 @@ use rocket::response;
 pub mod ctx;
 pub mod renderer;
 pub mod form; 
+pub mod http;
 
 #[derive(rocket::Responder)]
 pub enum PageError {
