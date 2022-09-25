@@ -8,3 +8,23 @@ pub use domain::clip::{ClipError, Clip};
 pub use domain::time::Time;
 pub use data::DataError;
 pub use service::ServiceError;
+
+use data::AppDatabase;
+use rocket::fs::FileServer;
+use rocket::{Build, Rocket};
+use web::{renderer::Renderer};
+
+// Build rocket server so we can us it
+pub fn rocket(config: RocketConfig) -> Rocket<Build> {
+    rocket::build()
+        .manage::<AppDatabase>(config.database)
+        .manage::<Renderer>(config.renderer)
+        .mount("/", web::http::routes())
+        .mount("/static", FileServer::from("static"))
+        .register("/", web::http::catcher::catchers())
+}
+
+pub struct RocketConfig {
+    pub renderer: Renderer<'static>,
+    pub database: AppDatabase,
+}
