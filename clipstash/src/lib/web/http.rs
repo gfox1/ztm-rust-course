@@ -5,15 +5,17 @@ use crate::web::{ctx, form, renderer::Renderer, PageError};
 use crate::{ServiceError, ShortCode};
 use rocket::form::{Contextual, Form};
 use rocket::http::{Cookie, CookieJar, Status};
-use rocket::response::content::Html;
+use rocket::response::content::RawHtml;
 use rocket::response::{status, Redirect};
 use rocket::{uri, State};
 
+// Route to the home page.
 #[rocket::get("/")]
-fn home(renderer: &State<Renderer<'_>>) -> Html<String> {
+fn home(renderer: &State<Renderer<'_>>) -> RawHtml<String> {
     let context = ctx::Home::default();
-    Html(renderer.render(context, &[]))
+    RawHtml(renderer.render(context, &[]))
 }
+
 
 pub fn routes() -> Vec<rocket::Route> {
     rocket::routes![home]
